@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\employees;
+use App\Models\food_technologists;
+use App\Models\managers;
+use App\Models\secretaries;
+use Illuminate\Support\Facades\Hash;
+
+class AdministratorController extends Controller
+{
+    public function index()
+    {
+        $employees = employees::all();
+        return view('administrator.index', compact('employees'));
+    }
+
+    public function edit(employees $employee)
+    {
+        return view('administrator_edit', compact('employee'));
+    }
+
+    public function update(Request $request, employees $employee)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'position' => 'required|string|max:50',
+            'email' => 'required|email|max:100',
+            'phone_number' => 'required|string|max:20',
+            'login' => 'required|string|max:50',
+            'password' => 'nullable|string|max:100', // Password field is now optional
+        ]);
+
+        $data = $request->all();
+
+        // Check if password field is empty
+        if (empty($data['password'])) {
+            unset($data['password']); // Remove password field from data array
+        } else {
+            // Hash the password if provided
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        $employee->update($data);
+
+        // Assign employee to the selected position
+        $this->assignPosition($request, $employee);
+
+        return redirect()->route('admin.index')->with('success', 'Employee updated successfully!');
+    }
+
+    public function assignPosition(Request $request, employees $employee)
+    {
+        $request->validate([
+            'position' => 'required|in:manager,secretary,food_technologist',
+        ]);
+
+        // Remove employee from all tables
+        managers::where('id_employee', $employee->id_employee)->delete();
+        secretaries::where('id_employee', $employee->id_employee)->delete();
+        food_technologists::where('id_employee', $employee->id_employee)->update(['id_manager' => null]);
+
+        // Assign employee to the selected position
+        if ($request->position == 'manager') {
+            managers::create(['id_employee' => $employee->id_employee]);
+        } elseif ($request->position == 'secretary') {
+            secretaries::create(['id_employee' => $employee->id_employee]);
+        } elseif ($request->position == 'food_technologist') {
+            food_technologists::create(['id_employee' => $employee->id_employee]);
+        }
+
+        return redirect()->route('admin.index')->with('success', 'Employee position assigned successfully!');
+    }
+
+    public function assignFoodTechnologistToManager(Request $request)
+    {
+        $request->validate([
+            'food_technologist_id' => 'required|exists:employees,id',
+            'manager_id' => 'required|exists:employees,id',
+        ]);
+
+        $foodTechnologist = food_technologists::where('id_employee', $request->food_technologist_id)->first();
+        $foodTechnologist->id_manager = $request->manager_id;
+        $foodTechnologist->save();
+
+        return redirect()->route('admin.index')->with('success', 'Food Technologist assigned to Manager successfully!');
+    }
+}

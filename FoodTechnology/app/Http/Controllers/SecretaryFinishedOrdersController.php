@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Orders;
+use App\Models\products;
+use PDF;
+use ZipArchive;
+
+class SecretaryFinishedOrdersController extends Controller
+{
+    public function index()
+    {
+        // Get completed orders
+        $orders = Orders::where('status', 'completed')->with('products')->get();
+
+        return view('secretary_orders_finished', compact('orders'));
+    }
+
+    public function generateOrderReportPDF($orderId)
+    {
+        $order = Orders::with('products.product_ingredients', 'products.product_microorganisms', 'products.test_result.resultImages')->findOrFail($orderId);
+
+        $pdf = PDF::loadView('orders_report', compact('order'));
+
+        return $pdf->download('order_report_'.$orderId.'.pdf');
+    }
+
+    public function downloadProductImages($productId)
+    {
+        $product = products::findOrFail($productId);
+
+        $images = $product->test_result->resultImages;
+
+        // Create a zip file
+        $zip = new \ZipArchive();
+        $zipFileName = 'product_images_'.$product->name.'.zip';
+        if ($zip->open($zipFileName, \ZipArchive::CREATE) === TRUE) {
+            foreach ($images as $image) {
+                $imagePath = storage_path('app/public/' . $image->image_path);
+                if(file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));
+                }
+            }
+            $zip->close();
+        }
+
+        // Download the zip file
+        return response()->download($zipFileName)->deleteFileAfterSend(true);
+    }
+}
