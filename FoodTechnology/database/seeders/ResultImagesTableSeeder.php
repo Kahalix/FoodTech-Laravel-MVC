@@ -22,6 +22,24 @@ class ResultImagesTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id_test_result' => 1,
+                'image_path' => 'result_images/default_image.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_test_result' => 2,
+                'image_path' => 'result_images/default_image.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_test_result' => 1,
+                'image_path' => 'result_images/default_image.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
         ]);
     }

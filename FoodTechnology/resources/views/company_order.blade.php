@@ -170,7 +170,33 @@
         document.getElementById('orderForm').style.display = 'none';
         document.getElementById('clientSelection').style.display = 'block';
     });
+    document.getElementById('backToSelection1').addEventListener('click', function() {
+    document.getElementById('existingClientForm').style.display = 'none';
+    document.getElementById('clientSelection').style.display = 'block';
 
+    // Resetowanie pól formularza firmy
+    document.getElementById('company_name').value = '';
+    document.getElementById('nip').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('postal_code').value = '';
+    document.getElementById('city').value = '';
+    document.getElementById('phone_number').value = '';
+    document.getElementById('email').value = '';
+});
+
+document.getElementById('backToSelection2').addEventListener('click', function() {
+    document.getElementById('orderForm').style.display = 'none';
+    document.getElementById('clientSelection').style.display = 'block';
+
+    // Resetowanie pól formularza firmy
+    document.getElementById('company_name').value = '';
+    document.getElementById('nip').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('postal_code').value = '';
+    document.getElementById('city').value = '';
+    document.getElementById('phone_number').value = '';
+    document.getElementById('email').value = '';
+});
     document.getElementById('addProduct').addEventListener('click', function() {
         const productCount = document.querySelectorAll('.product').length;
         const productInput = `
@@ -295,6 +321,13 @@
         const unit = selectedOption.getAttribute('data-unit');
         unitHint.textContent = unit ? `Unit: ${unit}` : '';
     }
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        const productCount = document.querySelectorAll('.product').length;
+        if (productCount < 1) {
+            event.preventDefault(); // Zatrzymaj domyślne działanie przycisku przesyłania formularza
+            alert('Please add at least one product.'); // Wyświetl ostrzeżenie
+        }
+    });
 </script>
 </body>
 </html>

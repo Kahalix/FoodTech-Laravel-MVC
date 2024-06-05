@@ -26,6 +26,13 @@
     </style>
 </head>
 <body>
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1>Review Tests</h1>
         @if(session('success'))
@@ -80,17 +87,21 @@
                                                             <td>{{ $product->test_result->decision }}</td>
                                                         </tr>
                                                         @if($product->test_result->resultImages->count() > 0)
-                                                            <tr>
-                                                                <td colspan="2">
-                                                                    <strong>Result Images:</strong>
-                                                                    <ul>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <strong>Result Images:</strong>
+                                                                <div class="container">
+                                                                    <div class="row">
                                                                         @foreach($product->test_result->resultImages as $image)
-                                                                            <li><img src="{{ asset('storage/' . $image->image_path) }}" alt="Result Image" style="max-width: 100px;"></li>
+                                                                            <div class="col-12 col-md-4 mb-3">
+                                                                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Result Image" class="img-fluid">
+                                                                            </div>
                                                                         @endforeach
-                                                                    </ul>
-                                                                </td>
-                                                            </tr>
-                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
@@ -191,6 +202,15 @@
             </div>
         </div>
     </div>
+
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

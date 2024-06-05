@@ -9,6 +9,14 @@
 
 </head>
 <body>
+
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1>Assign Product to Food Technologist</h1>
         <div class="row">
@@ -53,7 +61,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Completed Orders</th>
+                            <th>Completed Products</th>
                             <td id="completedProductCount"></td>
                         </tr>
 
@@ -64,6 +72,14 @@
             </div>
         </div>
     </div>
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

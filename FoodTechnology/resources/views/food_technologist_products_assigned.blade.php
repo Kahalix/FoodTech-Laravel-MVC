@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Products</title>
+    <title>Assigned Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -26,8 +26,19 @@
     </style>
 </head>
 <body>
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
     <div class="container mt-5">
-        <h1>Manage Products</h1>
+        <h1>Assigned Products</h1>
+        @if ($products->isEmpty())
+        <div class="alert alert-info" role="alert">
+            No products assigned for testing.
+        </div>
+        @endif
         <div class="accordion" id="productsAccordion">
             @foreach($products as $product)
                 <div class="accordion-item">
@@ -119,6 +130,13 @@
         </div>
     </div>
 
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script>

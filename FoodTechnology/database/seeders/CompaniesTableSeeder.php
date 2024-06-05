@@ -32,7 +32,7 @@ class CompaniesTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            // Add more companies as needed
+
         ]);
     }
 }

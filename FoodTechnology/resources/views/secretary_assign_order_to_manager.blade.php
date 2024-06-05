@@ -9,6 +9,14 @@
 
 </head>
 <body>
+
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1>Assign Order to Manager</h1>
         <div class="row">
@@ -82,6 +90,14 @@
             </div>
         </div>
     </div>
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
 
     <script>
         document.getElementById('manager_id').addEventListener('change', function () {

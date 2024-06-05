@@ -42,7 +42,9 @@ Auth::routes();
 Route::view('/login', 'auth.login')->name('login');
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/order/create', [CompanyOrdersController::class, 'create'])->name('order.create');
+
+Route::get('/order/create', [CompanyOrdersController::class, 'showOrderForm'])->name('order.create');
+Route::get('/order/create/{token}', [CompanyOrdersController::class, 'showOrderForm'])->name('order.create.link');
 Route::post('/order/store', [CompanyOrdersController::class, 'store'])->name('order.store');
 Route::post('/order/check-nip', [CompanyOrdersController::class, 'checkNip'])->name('order.checkNip');
 
@@ -66,9 +68,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/managers/{managerId}/details/{productCount}', [SecretaryAssignOrderToManagerController::class, 'getManagerDetails'])->name('managers.details');
 
 
-        Route::get('/link/create', function () {
-            // Logika dla tworzenia linku
-        })->name('link.create');
+        Route::get('/order/generate-temporary-link', [CompanyOrdersController::class, 'generateTemporaryOrderLink'])->name('order.generateTemporaryLink');
+
     });
 
     // Trasy dla managera

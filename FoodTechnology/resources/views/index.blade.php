@@ -6,12 +6,14 @@
     <title>NutriPro Insight</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
         header {
             background-color: #333;
@@ -28,9 +30,6 @@
         }
         .navbar-nav .nav-link:hover, .navbar-nav .active-link {
             background-color: #555;
-        }
-        .container {
-            margin: 20px;
         }
         section {
             display: none;
@@ -59,7 +58,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">NutriPro Insight</a>
+        <a class="navbar-brand" href="#"><img src="{{ asset('images/logo.png') }}" height="50px" alt="logo">NutriPro Insight</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -119,7 +118,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Random Test Results</h5>
-                        <ul class="list-group" id="random-test-results"></ul>
+                        <div class="row mt-5" id="random-test-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed Orders Per Month</h5>
+                        <canvas id="ordersChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -207,30 +216,16 @@
             </div>
         </div>
     </section>
+
+
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var sections = document.querySelectorAll("nav a");
-        sections.forEach(function(section) {
-            section.addEventListener("click", function(event) {
-                event.preventDefault();
-                var targetId = this.getAttribute("href").substring(1);
-                var targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    document.querySelectorAll("section").forEach(function(section) {
-                        section.classList.remove("active");
-                    });
-                    targetSection.classList.add("active");
-                    sections.forEach(function(section) {
-                        section.classList.remove("active-link");
-                    });
-                    this.classList.add("active-link");
-                }
-            });
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchStatistics();
+    });
 
-        // Fetch statistics and populate the dashboard
+    function fetchStatistics() {
         fetch('/api/statistics')
             .then(response => response.json())
             .then(data => {
@@ -239,20 +234,77 @@
                 const resultsList = document.getElementById('random-test-results');
                 data.randomTestResults.forEach(result => {
                     const listItem = document.createElement('li');
-                    listItem.classList.add('list-group-item');
-                    if (result.image_path) {
-                        const image = document.createElement('img');
-                        image.src = result.image_path;
-                        image.alt = 'result image';
-                        image.style.width = "100px";
-                        listItem.appendChild(image);
-                    }
+                    listItem.classList.add('list-group-item', 'mb-4');
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+
+                    const cardBody = document.createElement('div');
+                    cardBody.classList.add('card-body');
+
                     const text = document.createElement('p');
-                    text.textContent = `${result.test_results}. Decision: ${result.decision}`;
-                    listItem.appendChild(text);
+                    text.textContent = `${result.test_results}`;
+                    const decision = document.createElement('p');
+                    decision.textContent = `Decision: ${result.decision}`;
+
+                    const row = document.createElement('div');
+                    row.classList.add('row', 'g-3', 'mt-3');
+
+                    result.images.forEach(imagePath => {
+                        const col = document.createElement('div');
+                        col.classList.add('col-md-4');
+                        const image = document.createElement('img');
+                        image.src = imagePath;
+                        image.style.width = '300px';
+                        image.alt = 'result image';
+                        image.classList.add('img-fluid');
+                        col.appendChild(image);
+                        row.appendChild(col);
+                    });
+
+                    cardBody.appendChild(text);
+                    cardBody.appendChild(decision);
+                    cardBody.appendChild(row);
+                    card.appendChild(cardBody);
+                    listItem.appendChild(card);
                     resultsList.appendChild(listItem);
                 });
+
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const ordersPerMonth = new Array(12).fill(0);
+                for (const [month, count] of Object.entries(data.completedOrdersPerMonth)) {
+                    ordersPerMonth[parseInt(month) - 1] = count;
+                }
+
+                const ctx = document.getElementById('ordersChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Completed Orders',
+                            data: ordersPerMonth,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
             });
+    }
+
+    document.querySelectorAll('nav .nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
+            document.querySelector(link.getAttribute('href')).classList.add('active');
+        });
     });
 </script>
 

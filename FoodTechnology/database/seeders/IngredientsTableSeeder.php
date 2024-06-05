@@ -28,7 +28,7 @@ class IngredientsTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            // Add more ingredients as needed
+
         ]);
     }
 }

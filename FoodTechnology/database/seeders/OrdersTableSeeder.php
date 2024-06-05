@@ -11,9 +11,9 @@ class OrdersTableSeeder extends Seeder
     {
         DB::table('orders')->insert([
             [
-                'id_secretary' => 1, // Assuming the Secretary1 user ID is 2
-                'id_manager' => 1, // Assuming the Manager1 user ID is 4
-                'id_company' => 1, // Assuming the Company A ID is 1
+                'id_secretary' => 1,
+                'id_manager' => 1,
+                'id_company' => 1,
                 'name' => 'Order A',
                 'date' => now(),
                 'description' => 'Description of Order A',
@@ -24,9 +24,9 @@ class OrdersTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id_secretary' => 2, // Assuming the Secretary2 user ID is 3
-                'id_manager' => 2, // Assuming the Manager2 user ID is 5
-                'id_company' => 2, // Assuming the Company B ID is 2
+                'id_secretary' => 2,
+                'id_manager' => 2,
+                'id_company' => 2,
                 'name' => 'Order B',
                 'date' => now(),
                 'description' => 'Description of Order B',
@@ -36,7 +36,7 @@ class OrdersTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            // Add more orders as needed
+
         ]);
     }
 }

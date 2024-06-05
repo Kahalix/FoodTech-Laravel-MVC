@@ -8,12 +8,23 @@ use App\Models\ingredients;
 
 class AdminIngredientsController extends Controller
 {
-    public function index()
-    {
-        $ingredients = ingredients::all();
-        return view('administrator_ingredients_manage', compact('ingredients'));
+    public function index(Request $request)
+{
+    $query = ingredients::query();
+
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where('name', 'like', "%{$search}%");
+
+        $ingredients = $query->paginate(50);
+
+    return view('administrator_ingredients_manage', compact('ingredients', 'search'));
     }
 
+    $ingredients = $query->paginate(2);
+
+    return view('administrator_ingredients_manage', compact('ingredients'));
+}
     public function store(Request $request)
     {
         $request->validate([

@@ -9,14 +9,37 @@ use App\Models\Orders;
 use App\Models\product_ingredients;
 use App\Models\Products;
 use App\Models\ProductIngredients;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class CompanyOrdersController extends Controller
 {
-    public function create()
+    public function generateTemporaryOrderLink()
+{
+    // Create a signed URL with a 24-hour expiration time
+    $temporaryLink = URL::temporarySignedRoute(
+        'order.create', // Named route for creating orders
+        Carbon::now()->addHours(24),
+        ['token' => Str::random(40)]  // Random token for additional security
+    );
+
+    return response()->json([
+        'success' => true,
+        'link' => $temporaryLink
+    ]);
+}
+
+    public function showOrderForm(Request $request)
     {
+        // Ensure the token is valid and has not expired
+        if (!$request->hasValidSignature()) {
+            abort(401);
+        }
         $ingredients = Ingredients::where('added_by', '!=', 'FoodTechnologist')->get();
         return view('company_order', compact('ingredients'));
     }
+
 
     public function checkNip(Request $request)
 {

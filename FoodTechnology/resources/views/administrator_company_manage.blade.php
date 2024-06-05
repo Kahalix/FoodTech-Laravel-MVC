@@ -50,9 +50,26 @@
 
 <div class="container mt-5">
     <h1>Manage Companies</h1>
+
+    <!-- Pagination Search -->
     <div class="mb-3">
-        <input type="text" id="searchCompany" class="form-control" placeholder="Search for companies or orders...">
+        <form method="GET" action="{{ route('admin.company.index') }}">
+            <div class="input-group">
+                <input type="text" name="search" id="searchBar" class="form-control" placeholder="Search for companies or orders" value="{{ request('search') }}">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </form>
     </div>
+
+    <!-- Dynamic Search -->
+    <div class="mb-3">
+        <input type="text" id="searchCompany" class="form-control" placeholder="Search for companies or orders on current page">
+    </div>
+
+    <!-- Display Search Results -->
+    @if($companies->isEmpty())
+        <p>No results found.</p>
+    @endif
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCompanyModal">Add New Company</button>
     <div class="accordion" id="companiesAccordion">
         @foreach($companies as $company)
@@ -78,51 +95,69 @@
 
 
                         <!-- Add Order Modal -->
-<div class="modal fade" id="addOrderModal{{ $company->id_company }}" tabindex="-1" role="dialog" aria-labelledby="addOrderModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="post" action="{{ route('admin.company.storeOrder', ['companyId' => $company->id_company]) }}">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addOrderModalLabel">Add New Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                <input type="hidden" name="id_company" value="{{ $company->id_company }}">
-                    <div class="form-group">
-                        <label for="order_name">Name</label>
-                        <input type="text" class="form-control" id="order_name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="order_description">Description</label>
-                        <textarea class="form-control" id="order_description" name="description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="order_status">Status</label>
-                        <select class="form-control" id="order_status" name="status" required>
-                            <option value="assigned">Assigned</option>
-                            <option value="in progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="order_deadline">Deadline</label>
-                        <input type="date" class="form-control" id="order_deadline" name="deadline" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="order_cost">Cost</label>
-                        <input type="text" class="form-control" id="order_cost" name="cost" required>
-                    </div>
+                        <div class="modal fade" id="addOrderModal{{ $company->id_company }}" tabindex="-1" role="dialog" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form method="post" action="{{ route('admin.company.storeOrder', ['companyId' => $company->id_company]) }}">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addOrderModalLabel">Add New Order</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id_company" value="{{ $company->id_company }}">
+                                            <div class="form-group">
+                                                <label for="order_name">Name</label>
+                                                <input type="text" class="form-control" id="order_name" name="name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_description">Description</label>
+                                                <textarea class="form-control" id="order_description" name="description" required></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_status">Status</label>
+                                                <select class="form-control" id="order_status" name="status" required>
+                                                    <option value="assigned">Assigned</option>
+                                                    <option value="in progress">In Progress</option>
+                                                    <option value="completed">Completed</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_deadline">Deadline</label>
+                                                <input type="date" class="form-control" id="order_deadline" name="deadline" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_cost">Cost</label>
+                                                <input type="text" class="form-control" id="order_cost" name="cost" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_manager">Manager</label>
+                                                <select class="form-control" id="order_manager" name="id_manager">
+                                                    <option value="">Select Manager (Optional)</option>
+                                                    @foreach($managers as $manager)
+                                                        <option value="{{ $manager->id_manager }}">{{ $manager->employee->first_name }} {{ $manager->employee->last_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_secretary">Secretary</label>
+                                                <select class="form-control" id="order_secretary" name="id_secretary">
+                                                    <option value="">Select Secretary (Optional)</option>
+                                                    @foreach($secretaries as $secretary)
+                                                        <option value="{{ $secretary->id_secretary }}">{{ $secretary->employee->first_name }} {{ $secretary->employee->last_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
                         <div class="accordion" id="ordersAccordion{{ $company->id_company }}">
                             @foreach($company->orders as $order)
@@ -144,6 +179,18 @@
                                             <p>{{ $order->status }}</p>
                                             <h6>Cost</h6>
                                             <p>{{ $order->cost }}</p>
+                                            @if ($order->secretary)
+                                            <h6>Secretary</h6>
+                                            <p>{{ $order->secretary->employee->first_name }} {{ $order->secretary->employee->last_name }}</p>
+                                            @else
+                                                <p>No Secretary Assigned</p>
+                                            @endif
+                                            @if ($order->manager)
+                                                <h6>Manager</h6>
+                                                <p>{{ $order->manager->employee->first_name }} {{ $order->manager->employee->last_name }}</p>
+                                            @else
+                                                <p>No Manager Assigned</p>
+                                            @endif
                                             <!-- Button to Open Edit Order Modal -->
                                             <button onclick="editOrder({{ $order->id_order }})" class="btn btn-secondary">Edit</button>
 
@@ -151,46 +198,56 @@
                                             <button onclick="confirmDeleteOrder({{ $order->id_order }})" class="btn btn-danger">Delete</button>
                                             <h6>Products</h6>
                                             <!-- Button to Open Add Product Modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-    Add Product
-</button>
-<!-- Add Product Modal -->
-<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="post" action="{{ route('admin.company.storeProduct', ['orderId' => $order->id_order]) }}" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id_order" value="{{ $order->id_order }}">
-                    <div class="form-group">
-                        <label for="product_name">Name</label>
-                        <input type="text" class="form-control" id="product_name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product_status">Status</label>
-                        <select class="form-control" id="product_status" name="status" required>
-                            <option value="assigned">Assigned</option>
-                            <option value="in progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="product_image">Image</label>
-                        <input type="file" class="form-control" id="product_image" name="product_image" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                                            Add Product
+                                        </button>
+                                        <!-- Add Product Modal -->
+                                        <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <form method="post" action="{{ route('admin.company.storeProduct', ['orderId' => $order->id_order]) }}" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="id_order" value="{{ $order->id_order }}">
+                                                            <div class="form-group">
+                                                                <label for="product_name">Name</label>
+                                                                <input type="text" class="form-control" id="product_name" name="name" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="product_status">Status</label>
+                                                                <select class="form-control" id="product_status" name="status" required>
+                                                                    <option value="assigned">Assigned</option>
+                                                                    <option value="awaiting">Awaiting</option>
+                                                                    <option value="completed">Completed</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="product_foodtechnologist">Food Technologist</label>
+                                                                <select class="form-control" id="product_foodtechnologist" name="id_food_technologist">
+                                                                    <option value="">Select Food Technologist (Optional)</option>
+                                                                    @foreach($foodtechnologists as $foodtechnologist)
+                                                                        <option value="{{ $foodtechnologist->id_food_technologist }}">{{ $foodtechnologist->employee->first_name }} {{ $foodtechnologist->employee->last_name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="product_image">Image</label>
+                                                                <input type="file" class="form-control" id="product_image" name="product_image" required>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                             <div class="accordion" id="productsAccordion{{ $order->id_order }}">
                                                 @foreach($order->products as $product)
                                                     <div class="accordion-item">
@@ -203,6 +260,14 @@
                                                             <div class="accordion-body">
                                                                 <h6>Status</h6>
                                                                 <p>{{ $product->status }}</p>
+
+                                                                @if ($product->id_food_technologist)
+                                                                <h6>Food Technologist</h6>
+
+                                                                <p>Food Technologist: {{ $product->foodTechnologist->employee->first_name }} {{ $product->foodTechnologist->employee->last_name }}</p>
+                                                                @else
+                                                                <p>No Food Technologist Assigned</p>
+                                                                @endif
                                                                 <button type="button" class="btn btn-primary" onclick="editProduct({{ $product->id_product }})">
                                                                     Edit Product
                                                                 </button>
@@ -235,11 +300,13 @@
                                                                             <div class="accordion-body">
                                                                                 <p>{{ $product->test_result->test_results }}</p>
                                                                                 <h6>Result Images</h6>
-                                                                                <ul>
+                                                                                <div class="row">
                                                                                     @foreach($product->test_result->resultImages as $image)
-                                                                                        <li><img src="{{ asset('storage/' . $image->image_path) }}" alt="Result Image" style="max-width: 100px;"></li>
+                                                                                        <div class="col-6 col-md-4 mb-3">
+                                                                                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Result Image" width="300px" class="img-fluid">
+                                                                                        </div>
                                                                                     @endforeach
-                                                                                </ul>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -391,7 +458,7 @@
                         <label for="edit_order_status">Status</label>
                         <select class="form-control" id="edit_order_status" name="status" required>
                             <option value="assigned">Assigned</option>
-                            <option value="processing">Processing</option>
+                            <option value="in progress">In Progress</option>
                             <option value="completed">Completed</option>
                         </select>
                     </div>
@@ -403,7 +470,24 @@
                         <label for="edit_order_cost">Cost</label>
                         <input type="text" class="form-control" id="edit_order_cost" name="cost" required>
                     </div>
-                    <!-- Similarly, you can add dropdowns or other fields for selecting secretary, manager, and company -->
+                    <div class="form-group">
+                        <label for="edit_order_manager">Manager</label>
+                        <select class="form-control" id="edit_order_manager" name="id_manager">
+                            <option value="">None</option>
+                            @foreach($managers as $manager)
+                                <option value="{{ $manager->id_manager }}">{{ $manager->employee->first_name }} {{ $manager->employee->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_order_secretary">Secretary</label>
+                        <select class="form-control" id="edit_order_secretary" name="id_secretary">
+                            <option value="">None</option>
+                            @foreach($secretaries as $secretary)
+                                <option value="{{ $secretary->id_secretary }}">{{ $secretary->employee->first_name }} {{ $secretary->employee->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -425,6 +509,8 @@
                 document.getElementById('edit_order_status').value = data.status;
                 document.getElementById('edit_order_deadline').value = data.deadline;
                 document.getElementById('edit_order_cost').value = data.cost;
+                document.getElementById('edit_order_manager').value = data.id_manager ? data.id_manager : '';
+                document.getElementById('edit_order_secretary').value = data.id_secretary ? data.id_secretary : '';
                 const editForm = document.getElementById('editOrderForm');
                 editForm.action = `/admin/order/${id}`;
                 const modal = new bootstrap.Modal(document.getElementById('editOrderModal'));
@@ -451,11 +537,12 @@
 </script>
 
 
+
 <!-- Edit Product Modal -->
 <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="editProductForm" method="post" action="">
+            <form id="editProductForm" method="post" action="" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
@@ -472,11 +559,23 @@
                         <label for="edit_product_status">Status</label>
                         <select class="form-control" id="edit_product_status" name="status" required>
                             <option value="assigned">Assigned</option>
-                            <option value="processing">Processing</option>
+                            <option value="awaiting">Awaiting</option>
                             <option value="completed">Completed</option>
                         </select>
                     </div>
-                    <!-- You may add fields for editing product image as well -->
+                    <div class="form-group">
+                        <label for="edit_product_foodtechnologist">Food Technologist</label>
+                        <select class="form-control" id="edit_product_foodtechnologist" name="id_food_technologist">
+                            <option value="">Select Food Technologist (Optional)</option>
+                            @foreach($foodtechnologists as $foodtechnologist)
+                                <option value="{{ $foodtechnologist->id_food_technologist }}">{{ $foodtechnologist->employee->first_name }} {{ $foodtechnologist->employee->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_product_image">Image</label>
+                        <input type="file" class="form-control" id="edit_product_image" name="product_image">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -486,6 +585,7 @@
         </div>
     </div>
 </div>
+
 <script>
     function editProduct(id) {
         fetch(`/admin/product/${id}/edit`)
@@ -494,6 +594,7 @@
                 document.getElementById('editProductId').value = data.id_product;
                 document.getElementById('edit_product_name').value = data.name;
                 document.getElementById('edit_product_status').value = data.status;
+                document.getElementById('edit_product_foodtechnologist').value = data.id_food_technologist;
                 const editForm = document.getElementById('editProductForm');
                 editForm.action = `/admin/product/${id}`;
                 const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
@@ -519,6 +620,11 @@
 </script>
 
 
+ <!-- Pagination Links -->
+                 <div class="d-flex justify-content-center">
+                    {{ $companies->links('pagination::bootstrap-5') }}
+                </div>
+
 
 
 </main>
@@ -526,7 +632,6 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <script>
     document.querySelectorAll('.companyaccordion').forEach(item => {
         item.addEventListener('click', () => {

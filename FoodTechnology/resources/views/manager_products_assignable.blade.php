@@ -28,8 +28,17 @@
     </style>
 </head>
 <body>
+
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1>Assignable Products</h1>
+
         <div class="accordion" id="ordersAccordion">
             @foreach($orders as $order)
            @php
@@ -93,10 +102,23 @@
                             </div>
                         </div>
                     </div>
+                @else
+                    <div class="alert alert-warning" role="alert">
+                        No products found for order {{ $order->name }}
+                    </div>
                 @endif
             @endforeach
         </div>
     </div>
+
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

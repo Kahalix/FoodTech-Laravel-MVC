@@ -28,20 +28,22 @@
     </style>
 </head>
 <body>
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1>Assignable Orders</h1>
         <div class="accordion" id="ordersAccordion">
             @foreach($companies as $company)
-                @php
-                    $assignedOrders = $company->orders->where('status', 'assigned');
-                    $orderCount = $assignedOrders->count();
-                    $increment = 1;
-                @endphp
-                @if($orderCount > 0)
+                @if($company->assignedOrderCount > 0)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading{{ $company->id_company }}">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $company->id_company }}" aria-expanded="true" aria-controls="collapse{{ $company->id_company }}">
-                                {{ $company->name }} - Total Orders: {{ $orderCount }}
+                                {{ $company->name }} - Total Orders: {{ $company->assignedOrderCount }}
                             </button>
                         </h2>
                         <div id="collapse{{ $company->id_company }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $company->id_company }}" data-bs-parent="#ordersAccordion">
@@ -59,9 +61,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($assignedOrders as $order)
+                                        <input type="hidden" value="{{ $company->increment = 1 }}">
+                                        @foreach($company->orders as $order)
                                             <tr class="expandable-row" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ $order->id_order }}" aria-expanded="false" aria-controls="orderDetails{{ $order->id_order }}">
-                                                <td class="expandable-row-icon collapsed">{{ $increment++ }}</td>
+                                                <td class="expandable-row-icon collapsed">{{ $company->increment++ }}</td>
                                                 <td>{{ $order->description }}</td>
                                                 <td>{{ $order->date }}</td>
                                                 <td>{{ $order->deadline }}</td>
@@ -103,8 +106,17 @@
         </div>
     </div>
 
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script>
         document.querySelectorAll('.expandable-row').forEach(row => {
             row.addEventListener('click', function() {

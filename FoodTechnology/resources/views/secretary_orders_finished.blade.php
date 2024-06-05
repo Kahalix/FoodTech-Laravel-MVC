@@ -9,6 +9,14 @@
 
 </head>
 <body>
+
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
+
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Finished Orders</h1>
         @if(session('success'))
@@ -16,6 +24,19 @@
                 {{ session('success') }}
             </div>
         @endif
+
+
+          <!-- Search Bar -->
+          <div class="mb-3">
+            <form method="GET" action="{{ route('secretary.orders.finished') }}">
+                <div class="input-group">
+                    <input type="text" name="search" id="searchBar" class="form-control" placeholder="Search orders or companies" value="{{ request('search') }}">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+
+
         <div class="accordion" id="ordersAccordion">
             @foreach($orders as $order)
                 <div class="accordion-item">
@@ -84,7 +105,22 @@
         </div>
 
 
+         <!-- Pagination Links -->
+         <div class="mt-4">
+            {{ $orders->links('pagination::bootstrap-5') }}
+        </div>
+
+
     </div>
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

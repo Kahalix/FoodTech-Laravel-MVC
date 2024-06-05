@@ -10,12 +10,23 @@ use ZipArchive;
 
 class SecretaryFinishedOrdersController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Get completed orders
-        $orders = Orders::where('status', 'completed')->with('products')->get();
+        $search = $request->input('search');
+        $query = Orders::where('status', 'completed')->with('products');
 
-        return view('secretary_orders_finished', compact('orders'));
+        if ($search) {
+            $query->where(function($query) use ($search) {
+                $query->where('name', 'LIKE', '%' . $search . '%')
+                      ->orWhereHas('company', function($query) use ($search) {
+                          $query->where('name', 'LIKE', '%' . $search . '%');
+                      });
+            });
+        }
+
+        $orders = $query->paginate(2);
+
+        return view('secretary_orders_finished', compact('orders', 'search'));
     }
 
     public function generateOrderReportPDF($orderId)

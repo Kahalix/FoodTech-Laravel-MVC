@@ -10,6 +10,12 @@
 
 </head>
 <body>
+
+    @include('users_sidemenu')
+
+    <div class="col d-flex flex-column h-sm-100">
+        <main class="row overflow-auto">
+
     <div class="container mt-5">
         <h1>Product Test: {{ $product->name }}</h1>
 
@@ -156,6 +162,14 @@
             </div>
         </form>
     </div>
+
+
+</main>
+@include('footer')
+
+</div>
+</div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

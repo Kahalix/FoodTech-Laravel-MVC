@@ -41,7 +41,7 @@ class MicroorganismsTableSeeder extends Seeder
                 'updated_at' => now(),
             ]
 
-            // Add more microorganisms as needed
+
         ]);
     }
 }
