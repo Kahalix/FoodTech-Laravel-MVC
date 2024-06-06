@@ -40,6 +40,12 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        @if($products->isEmpty())
+        <div class="alert alert-info" role="alert">
+            There are no tests to review at the moment.
+        </div>
+      @else
         <div class="accordion" id="productsAccordion">
             @foreach($products as $product)
                 <div class="accordion-item">
@@ -177,6 +183,7 @@
                 </div>
             @endforeach
         </div>
+        @endif
     </div>
 
     <!-- Reassign Modal -->

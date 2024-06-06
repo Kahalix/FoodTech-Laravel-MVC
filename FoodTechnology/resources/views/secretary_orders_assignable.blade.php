@@ -37,6 +37,7 @@
 
     <div class="container mt-5">
         <h1>Assignable Orders</h1>
+        @if ($hasOrders)
         <div class="accordion" id="ordersAccordion">
             @foreach($companies as $company)
                 @if($company->assignedOrderCount > 0)
@@ -61,7 +62,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <input type="hidden" value="{{ $company->increment = 1 }}">
                                         @foreach($company->orders as $order)
                                             <tr class="expandable-row" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ $order->id_order }}" aria-expanded="false" aria-controls="orderDetails{{ $order->id_order }}">
                                                 <td class="expandable-row-icon collapsed">{{ $company->increment++ }}</td>
@@ -104,6 +104,12 @@
                 @endif
             @endforeach
         </div>
+
+        @else
+        <div class="alert alert-info" role="alert">
+            There are no assignable orders at the moment.
+        </div>
+        @endif
     </div>
 
 

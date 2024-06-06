@@ -39,16 +39,16 @@
     <div class="container mt-5">
         <h1>Assignable Products</h1>
 
+        @if ($hasProducts)
+
         <div class="accordion" id="ordersAccordion">
             @foreach($orders as $order)
-           @php
-            $productCount = $order->products->count();
-        @endphp
-                @if($productCount > 0)
+
+            @if($order->productCount > 0)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading{{ $order->id_order }}">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $order->id_order }}" aria-expanded="true" aria-controls="collapse{{ $order->id_order }}">
-                                Created: {{ $order->date }} <br> Deadline: {{ $order->deadline }} <br> Description: {{ $order->description }} <br> Total Products: {{ $productCount }}
+                                Created: {{ $order->date }} <br> Deadline: {{ $order->deadline }} <br> Description: {{ $order->description }} <br> Total Products: {{ $order->productCount }}
                             </button>
                         </h2>
                         <div id="collapse{{ $order->id_order }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $order->id_order }}" data-bs-parent="#ordersAccordion">
@@ -102,13 +102,15 @@
                             </div>
                         </div>
                     </div>
-                @else
-                    <div class="alert alert-warning" role="alert">
-                        No products found for order {{ $order->name }}
-                    </div>
                 @endif
+
             @endforeach
         </div>
+        @else
+        <div class="alert alert-info" role="alert">
+            There are no assignable products at the moment.
+        </div>
+        @endif
     </div>
 
 
