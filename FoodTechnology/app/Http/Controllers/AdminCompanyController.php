@@ -61,7 +61,7 @@ class AdminCompanyController extends Controller
         ]);
 
         companies::create($request->all());
-        return redirect()->route('admin.company.index');
+        return redirect()->route('admin.company.index')->with('success', 'Company created successfully');
     }
 
     public function edit($id)
@@ -85,7 +85,7 @@ class AdminCompanyController extends Controller
 
         $company = companies::findOrFail($request->id);
         $company->update($request->all());
-        return redirect()->route('admin.company.index');
+        return redirect()->route('admin.company.index')->with('success', 'Company updated successfully');
     }
 
     public function destroy($id)
@@ -119,7 +119,7 @@ public function storeOrder(Request $request, $companyId)
 
     orders::create($request->all());
 
-    return redirect()->route('admin.company.index');
+    return redirect()->route('admin.company.index')->with('success', 'Order created successfully');
 }
 // Metoda do pobierania danych zamówienia do edycji
 public function editOrder($id)
@@ -144,7 +144,7 @@ public function updateOrder(Request $request, $id)
     $order = orders::findOrFail($id);
     $order->update($request->all());
 
-    return redirect()->route('admin.company.index');
+    return redirect()->route('admin.company.index')->with('success', 'Order updated successfully');
 }
 
 // Metoda do usuwania zamówienia
@@ -227,7 +227,7 @@ public function storeProduct(Request $request, $orderId)
             ]);
         }
 
-        return redirect()->route('admin.company.index');
+        return redirect()->route('admin.company.index')->with('success', 'Product updated successfully');
     }
 
     public function destroyProduct($id)

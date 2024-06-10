@@ -14,8 +14,10 @@ class ManagerController extends Controller
 
         // Get orders assigned to the current manager
         $orders = orders::with(['products' => function($query) {
-            $query->whereNull('id_food_technologist');
-        }])->where('id_manager', $managerId)->get();
+            $query->whereNull('id_food_technologist')
+            ->whereNot('status', 'completed');
+        }])->where('id_manager', $managerId)
+        ->get();
         // Add product count to each order and check if there are any assignable products
         $orders->each(function($order) {
             $order->productCount = $order->products->count();

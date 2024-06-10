@@ -10,7 +10,8 @@ class SecretaryController extends Controller
     public function showAssignableOrders()
     {
         $companies = companies::with(['orders' => function($query) {
-            $query->where('status', 'assigned');
+            $query->whereNot('status', 'completed')
+            ->whereNull('id_manager');
         }])->get();
 
         // Add a new property to each company object to store the count of assigned orders

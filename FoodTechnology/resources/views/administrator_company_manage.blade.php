@@ -527,6 +527,7 @@
                 }
             }).then(response => {
                 if (response.ok) {
+                    alert('Order deleted successfully');
                     window.location.reload();
                 } else {
                     alert('Failed to delete the order');
@@ -612,7 +613,11 @@
                 }
             }).then(response => {
                 if (response.ok) {
+                    alert('Product deleted successfully');
                     location.reload();
+                }
+                else {
+                    alert('Failed to delete the product');
                 }
             });
         }
@@ -680,6 +685,7 @@
                 }
             }).then(response => {
                 if (response.ok) {
+                    alert('Company deleted successfully');
                     window.location.reload();
                 } else {
                     alert('Failed to delete the company');
