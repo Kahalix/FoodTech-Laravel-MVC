@@ -26,7 +26,7 @@ class microorganisms extends Model
 
     public $timestamps = false;
 
-  public function product_microorganisms()
+    public function product_microorganisms()
     {
         return $this->hasMany(product_microorganisms::class, 'id_microorganism');
     }
