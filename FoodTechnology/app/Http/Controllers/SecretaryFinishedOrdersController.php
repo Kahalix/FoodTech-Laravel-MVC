@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Orders;
+use App\Models\orders;
 use App\Models\products;
 use PDF;
 use ZipArchive;
@@ -13,7 +13,7 @@ class SecretaryFinishedOrdersController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $query = Orders::where('status', 'completed')->with('products');
+        $query = orders::where('status', 'completed')->with('products');
 
         if ($search) {
             $query->where(function($query) use ($search) {
@@ -31,7 +31,7 @@ class SecretaryFinishedOrdersController extends Controller
 
     public function generateOrderReportPDF($orderId)
     {
-        $order = Orders::with('products.product_ingredients', 'products.product_microorganisms', 'products.test_result.resultImages')->findOrFail($orderId);
+        $order = orders::with('products.product_ingredients', 'products.product_microorganisms', 'products.test_result.resultImages')->findOrFail($orderId);
 
         $pdf = PDF::loadView('orders_report', compact('order'));
 
